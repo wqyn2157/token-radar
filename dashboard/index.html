@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar — pre-token protocols ranked by implied launch value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">Token Launch Radar</p>
+    <h1>Protocols with no token yet, ranked by what their launch would be worth.</h1>
+    <p class="sub" id="subline">Reading the board…</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <nav class="tabs" aria-label="Views">
+    <button type="button" id="tabBoard" class="tab on">Launch board</button>
+    <button type="button" id="tabLive" class="tab">Already trading</button>
+  </nav>
+
+  <section id="boardView">
+    <div class="controls card">
+      <label>Search <input type="search" id="q" placeholder="Protocol or category…"></label>
+      <label>Category <select id="catSel"><option value="">All categories</option></select></label>
+      <label>Chain <select id="chainSel"><option value="">All chains</option></select></label>
+      <label>Sort <select id="sortSel">
+        <option value="rank">Rank (implied value)</option>
+        <option value="tvl">TVL, high to low</option>
+        <option value="momentum">7-day momentum</option>
+        <option value="age">Age, oldest first</option>
+        <option value="score">Score</option>
+      </select></label>
+      <label class="check"><input type="checkbox" id="watchOnly"> Watchlist only</label>
+      <span class="count" id="rowCount"></span>
+    </div>
+    <div class="card tableCard">
+      <table id="boardTable">
+        <thead><tr>
+          <th class="num">#</th><th>Protocol</th><th>Score</th>
+          <th class="num">Implied value</th><th class="num">TVL</th><th class="num">7d TVL</th>
+          <th class="num">Chains</th><th class="num">Age</th>
+        </tr></thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+      <p class="empty" id="boardEmpty" hidden>No protocol matches those filters.</p>
+    </div>
+  </section>
+
+  <section id="liveView" hidden>
+    <div class="card tableCard">
+      <p class="liveNote">These protocols already have a token that trades, so they are <strong>not</strong>
+      on the launch board. They are shown because they are the model's raw material: the multiple on the
+      right is the market cap the market actually gives each dollar of their TVL.</p>
+      <table id="liveTable">
+        <thead><tr>
+          <th>Protocol</th><th class="num">Market cap</th><th class="num">TVL</th>
+          <th class="num">Actual multiple</th><th class="num">7d TVL</th>
+        </tr></thead>
+        <tbody id="liveBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="detailView" hidden></section>
+  <details class="card method" id="method">
+    <summary>How this ranking works</summary>
+    <p>Every protocol on this board <strong>records no token</strong> in the snapshot — no market cap, no
+    CoinGecko id, no ticker — and is not a wrapped, staked or bridged product of a token that already
+    trades, not an exchange, and not a versioned pool of another protocol. The board covers the whole
+    watchlist the snapshot names and keeps going below its TVL floor under the same rule.</p>
+    <p>The implied value is a claim built only from the snapshot's own figures. Protocols that already
+    trade say what a dollar of TVL is worth in their category: the <em>median market-cap-to-TVL
+    multiple</em> of a category's tokenised protocols, shrunk toward the all-market median when a
+    category has few peers, and clamped between 0.03x and 2.50x. A protocol's base value is its TVL
+    times its category's multiple, then three adjustments apply: <em>momentum</em> (its 7-day TVL
+    change, clamped to −50%…+100%, weighted 0.6), <em>maturity</em> (how long DefiLlama has tracked it
+    with no token yet, 0.80x–1.15x over three years), and <em>reach</em> (how many chains it runs on,
+    up to 1.25x). The score is that implied value on a log scale, 0–100. Every row's detail view shows
+    each factor, so any line of this board can be recomputed by hand.</p>
+    <p>Two honest limits. This says what a launch would be worth <em>if</em> the protocol's record
+    stayed as it is; it does not predict that a token will be issued, or when. And "records no token"
+    is DefiLlama's record, not proof that none exists.</p>
+    <div id="catTable"></div>
+  </details>
+
+  <footer class="foot">
+    <p id="footline"></p>
+    <p>Implied values are this radar's own model output, not a promise of a token, a price, or an
+    airdrop. Farm plans are starting points for your own research; every step carries real cost and
+    risk, and no plan here is financial advice.</p>
+  </footer>
+</main>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
